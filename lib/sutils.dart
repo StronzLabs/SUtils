@@ -5,6 +5,7 @@ export 'package:sutils/utils/expanded_platform.dart';
 export 'package:sutils/utils/fullscreen.dart';
 
 import 'package:sutils/utils/expanded_platform.dart';
+import 'package:window_manager/window_manager.dart';
 
 final class SUtils {
     static bool _initialized = false;
@@ -14,7 +15,9 @@ final class SUtils {
             return;
 
         await EPlatform.initialize();
-    
+        if(EPlatform.isDesktop)
+            await windowManager.ensureInitialized();
+
         SUtils._initialized = true;
     }
 }
