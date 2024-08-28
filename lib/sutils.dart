@@ -3,6 +3,7 @@ export 'package:sutils/utils/simple_http.dart';
 export 'package:sutils/utils/resource_manager.dart';
 export 'package:sutils/utils/expanded_platform.dart';
 export 'package:sutils/utils/fullscreen.dart';
+export 'package:sutils/utils/stream_listener.dart';
 
 import 'package:sutils/utils/expanded_platform.dart';
 import 'package:window_manager/window_manager.dart';
