@@ -7,7 +7,14 @@ export 'package:sutils/utils/fullscreen.dart';
 import 'package:sutils/utils/expanded_platform.dart';
 
 final class SUtils {
-    static Future<void> initialize() async {
+    static bool _initialized = false;
+
+    static Future<void> ensureInitialized() async {
+        if (SUtils._initialized)
+            return;
+
         await EPlatform.initialize();
+    
+        SUtils._initialized = true;
     }
 }
