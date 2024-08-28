@@ -4,19 +4,6 @@
         "pubspec.lock": true,
         ".metadata": true,
         ".flutter-plugins": true,
-        ".flutter-plugins-dependencies": true,
-
-        "example/.dart_tool": true,
-        "example/pubspec.lock": true,
-        "example/.metadata": true,
-        "example/.flutter-plugins": true,
-        "example/.flutter-plugins-dependencies": true,
-        "example/build/": true,
-        "example/android": true,
-        "example/ios": true,
-        "example/web": true,
-        "example/linux": true,
-        "example/macos": true,
-        "example/windows": true,
+        ".flutter-plugins-dependencies": true
     }
 }
