@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:sutils/sutils_platform_interface.dart';
 
 final class EPlatform {
@@ -12,6 +13,8 @@ final class EPlatform {
 
     static bool get isMobileWeb => EPlatform.isWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android);
     static bool get isDesktopWeb => EPlatform.isWeb && (defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS);
+
+    static bool get isTablet => EPlatform.isMobile && MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.single).size.shortestSide >= 600;
 
     static bool get isAndroidTV => EPlatform._isAndroidTV;
     static bool get isTV => EPlatform.isAndroidTV;
