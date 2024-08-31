@@ -43,7 +43,8 @@ abstract class LocalStorage {
 
     @mustCallSuper
     Future<void> unserialize() async {
-        Map<String, dynamic> data = await LocalStorage._sharedPreferences.getAll(allowList: { this._prefix });
+        Map<String, dynamic> data = await LocalStorage._sharedPreferences.getAll();
+        data.removeWhere((String key, _) => !(key.contains(this._prefix)));
         for (String key in data.keys)
             if (key.startsWith(this._prefix)) {
                 String field = key.substring(this._prefix.length);
