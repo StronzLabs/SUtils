@@ -11,7 +11,7 @@ final class HTTP {
         assert(url is String || url is Uri);
         headers ??= {};
         if(!headers.containsKey("User-Agent"))
-            headers["User-Agent"] = "StronzLabs";
+            headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 
         HttpClient client = HttpClient();
         client.connectionTimeout = timeout;
@@ -65,6 +65,11 @@ final class HTTP {
     static Future<String> mime(dynamic url, {Map<String, String>? headers, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
         Map<String, String> responseHeaders = await head(url, headers: headers, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries);
         return responseHeaders["content-type"] ?? "*/*";
+    }
+
+    static Future<Uri> redirect(dynamic url, {Map<String, String>? headers, Duration? timeout, int maxRetries = 1}) async {
+        Response response = await _head(url, headers: headers, followRedirects: true, timeout: timeout, maxRetries: maxRetries);
+        return response.request!.url;
     }
 
     static Future<int> status(dynamic url, {Map<String, String>? headers, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
