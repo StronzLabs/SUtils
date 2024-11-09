@@ -5,15 +5,17 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 
 final class HTTP {
+
+    static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+
     HTTP._();
     
     static Future<Response> _request(dynamic url, String method, {Map<String, String>? headers, Map<String, String>? body, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
         assert(url is String || url is Uri);
         headers ??= {};
-        if(!headers.containsKey("User-Agent"))
-            headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 
         HttpClient client = HttpClient();
+        client.userAgent = HTTP.userAgent;
         client.connectionTimeout = timeout;
 
         for (int i = 0; i < maxRetries; i++) {
