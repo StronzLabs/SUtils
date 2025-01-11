@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sutils/sutils.dart';
+import 'package:sutils/utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 final class FullScreen {

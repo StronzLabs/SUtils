@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sutils/sutils_platform_interface.dart';
 
 final class EPlatform {
     EPlatform._();
@@ -16,12 +15,7 @@ final class EPlatform {
 
     static bool get isTablet => EPlatform.isMobile && MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.single).size.shortestSide >= 600;
 
-    static bool get isAndroidTV => EPlatform._isAndroidTV;
+    static late bool isAndroidTV;
     static bool get isTV => EPlatform.isAndroidTV;
-    
-    static late final bool _isAndroidTV;
-
-    static Future<void> initialize() async {
-        EPlatform._isAndroidTV = await SUtilsPlatform.instance.isAndroidTV();
-    }
 }
+

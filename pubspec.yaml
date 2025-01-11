@@ -1,26 +1,39 @@
 name: sutils
-description: "SUtils"
-version: 0.0.1
-
+description: "Utiliy library for Stronzlabs projects"
 publish_to: 'none'
 
+version: 0.0.1
+
+platforms:
+  android:
+  linux:
+  macos:
+  windows:
+
 environment:
-  sdk: ^3.5.1
+  sdk: ^3.6.0
   flutter: '>=3.3.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  connectivity_plus: ^6.1.1
   http: ^1.2.2
   mime: ^1.0.6
   plugin_platform_interface: ^2.0.2
   shared_preferences: ^2.3.3
   window_manager: ^0.4.2
+  wakelock_plus: ^1.2.10
+  package_info_plus: ^8.1.2
+  background_downloader: ^8.6.0
+  process_run: ^1.2.2+1
+  url_launcher: ^6.3.1
+  win32_registry: ^1.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   plugin:
@@ -28,3 +41,10 @@ flutter:
       android:
         package: org.stronzlabs.sutils
         pluginClass: SUtilsPlugin
+        dartPluginClass: EPlatformAndroid
+      linux:
+        dartPluginClass: SUtilsDesktop
+      macos:
+        dartPluginClass: SUtilsDesktop
+      windows:
+        dartPluginClass: SUtilsDesktop

@@ -1,26 +1,12 @@
-library sutils;
-export 'package:sutils/utils/simple_http.dart';
-export 'package:sutils/utils/resource_manager.dart';
-export 'package:sutils/utils/expanded_platform.dart';
-export 'package:sutils/utils/fullscreen.dart';
-export 'package:sutils/utils/stream_listener.dart';
-export 'package:sutils/utils/local_storage.dart';
-export 'package:sutils/utils/iterable_extension.dart';
+import 'src/plugin/desktop_plugin.dart' as desktop;
+import 'src/plugin/android_plugin.dart' as android;
 
-import 'package:sutils/utils/expanded_platform.dart';
-import 'package:window_manager/window_manager.dart';
+final class EPlatformAndroid {
+    EPlatformAndroid._();
+    static void registerWith() => android.registerWith();
+}
 
-final class SUtils {
-    static bool _initialized = false;
-
-    static Future<void> ensureInitialized() async {
-        if (SUtils._initialized)
-            return;
-
-        await EPlatform.initialize();
-        if(EPlatform.isDesktop)
-            await windowManager.ensureInitialized();
-
-        SUtils._initialized = true;
-    }
+final class SUtilsDesktop {
+    SUtilsDesktop._();
+    static void registerWith() => desktop.registerWith();
 }

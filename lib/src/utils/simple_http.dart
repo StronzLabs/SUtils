@@ -10,8 +10,9 @@ final class HTTP {
 
     HTTP._();
     
-    static Future<Response> _request(dynamic url, String method, {Map<String, String>? headers, Map<String, String>? body, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
+    static Future<Response> _request(dynamic url, String method, {Map<String, String>? headers, Map<String, String>? fieldsBody, String? stringBody, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
         assert(url is String || url is Uri);
+        assert((fieldsBody == null && stringBody == null) || (fieldsBody != null && stringBody == null) || (fieldsBody == null && stringBody != null));
         headers ??= {};
 
         HttpClient client = HttpClient();
@@ -23,8 +24,10 @@ final class HTTP {
                 Request req = Request(method, url is Uri ? url : Uri.parse(url));
                 req.headers.addAll(headers);
                 req.followRedirects = followRedirects;
-                if (body != null)
-                    req.bodyFields = body;
+                if (fieldsBody != null)
+                    req.bodyFields = fieldsBody;
+                if (stringBody != null)
+                    req.body = stringBody;
 
                 IOClient ioClient = IOClient(client);
                 StreamedResponse response = await ioClient.send(req);
@@ -79,19 +82,19 @@ final class HTTP {
         return response.statusCode;
     }
 
-    static Future<Response> _post(dynamic url, {Map<String, String>? headers, Map<String, String>? body, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
-        return _request(url, "POST", headers: headers, body: body, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries);
+    static Future<Response> _post(dynamic url, {Map<String, String>? headers, Map<String, String>? fieldsBody, String? stringBody, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
+        return _request(url, "POST", headers: headers, fieldsBody: fieldsBody, stringBody: stringBody, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries);
     }
 
-    static Future<Uint8List> postRaw(dynamic url, {Map<String, String>? headers, Map<String, String>? body, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
-        Response response = await _post(url, headers: headers, body: body, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries);
+    static Future<Uint8List> postRaw(dynamic url, {Map<String, String>? headers, Map<String, String>? fieldsBody, String? stringBody, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
+        Response response = await _post(url, headers: headers, fieldsBody: fieldsBody, stringBody: stringBody, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries);
         if (response.statusCode != 200)
             return Uint8List(0);
 
         return response.bodyBytes;
     }
 
-    static Future<String> post(dynamic url, {Map<String, String>? headers, Map<String, String>? body, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
-        return (await _post(url, headers: headers, body: body, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries)).body;
+    static Future<String> post(dynamic url, {Map<String, String>? headers, Map<String, String>? fieldsBody, String? stringBody, bool followRedirects = true, Duration? timeout, int maxRetries = 1}) async {
+        return (await _post(url, headers: headers, fieldsBody: fieldsBody, stringBody: stringBody, followRedirects: followRedirects, timeout: timeout, maxRetries: maxRetries)).body;
     }
 }

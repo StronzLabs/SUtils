@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:mime/mime.dart';
-import 'package:sutils/utils/simple_http.dart';
+import 'package:sutils/utils.dart';
 
 final class ResourceManager {
     ResourceManager._();
