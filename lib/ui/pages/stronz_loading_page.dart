@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sutils/logic/errors/stronz_loading_warn.dart';
 import 'package:sutils/logic/loading/stronz_dynamic_loading_phase.dart';
 import 'package:sutils/logic/update/version.dart';
+import 'package:sutils/sutils.dart';
 import 'package:sutils/ui/dialogs/confirmation_dialog.dart';
 import 'package:sutils/ui/pages/stronz_loading_phase.dart';
 import 'package:sutils/ui/pages/stronz_static_loading_phase.dart';
@@ -239,8 +240,10 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
         super.initState();
         WakelockPlus.enable();
 
-        this._foregrunLoading();
-        super.widget.backgroundLoading?.call();
+        SUtils.ensureInitialized().then((_) {
+            this._foregrunLoading();
+            super.widget.backgroundLoading?.call();
+        });
     }
 
     @override

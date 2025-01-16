@@ -17,11 +17,9 @@ void _setupOrientationAndOverlays() {
     ));
 }
 
-void registerWith() {
-    Future.delayed(Duration.zero, () async {
-        WidgetsFlutterBinding.ensureInitialized();
-        MethodChannel channel = MethodChannel('org.stronzlabs.sutils/utils');
-        EPlatform.isAndroidTV = await channel.invokeMethod<bool>('isAndroidTV') ?? false;
-        _setupOrientationAndOverlays();
-    });
+Future<void> registerWith() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    MethodChannel channel = MethodChannel('org.stronzlabs.sutils/utils');
+    EPlatform.isAndroidTV = await channel.invokeMethod<bool>('isAndroidTV') ?? false;
+    _setupOrientationAndOverlays();
 }
