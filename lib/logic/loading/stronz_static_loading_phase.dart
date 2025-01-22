@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:sutils/ui/pages/stronz_loading_phase.dart';
+import 'package:sutils/logic/loading/stronz_loading_phase.dart';
 
 class StronzStaticLoadingPhase extends StronzLoadingPhase {
     final List<Future<dynamic>> steps;

@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:sutils/logic/data/dynamic_loading_stream.dart';
+import 'package:sutils/logic/errors/stronz_loading_early_fail.dart';
 import 'package:sutils/logic/errors/stronz_loading_warn.dart';
 import 'package:sutils/logic/loading/stronz_dynamic_loading_phase.dart';
 import 'package:sutils/logic/update/version.dart';
 import 'package:sutils/sutils.dart';
 import 'package:sutils/ui/dialogs/confirmation_dialog.dart';
-import 'package:sutils/ui/pages/stronz_loading_phase.dart';
-import 'package:sutils/ui/pages/stronz_static_loading_phase.dart';
+import 'package:sutils/logic/loading/stronz_loading_phase.dart';
+import 'package:sutils/logic/loading/stronz_static_loading_phase.dart';
 import 'package:sutils/utils.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -79,17 +81,45 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
             throw "Molteplici errori durante il caricamento. Riprova più tardi";
     }
 
-    Stream<double> _dynamicLoad(List<Stream<dynamic>> loadingPhase, int allowedFails) async* {
+    Stream<double> _dynamicLoad(List<DynamicLoadingStream> loadingPhase, int allowedFails) async* {
         StreamController<(int, double)> loading = StreamController.broadcast();
         int succeeds = 0, fails = 0;
 
         List<StreamSubscription> subscriptions = loadingPhase.map((stream) {
 
             int index = loadingPhase.indexOf(stream);
-            StreamSubscription subscription = stream.listen(
-                (percentage) {
+            late StreamSubscription subscription;
+            subscription = stream.progress.listen(
+                (percentage) async {
                     if(loading.isClosed)
                         return;
+
+                    if(percentage is StronzLoadingEarlyFail) {
+                        if(!super.mounted)
+                            return;
+
+                        bool goOn = await ConfirmationDialog.ask(
+                            context: super.context,
+                            title: "Avviso",
+                            text: percentage.message,
+                            confirm: "Forza il caricamento",
+                            cancel: "Continua senza"
+                        );
+
+                        if(!goOn) {                            
+                            if(++fails > allowedFails)
+                                return loading.addError("Molteplici errori durante il caricamento. Riprova più tardi");
+
+                            if(++succeeds == loadingPhase.length)
+                                loading.close();
+
+                            subscription.cancel();
+                            stream.cancelled.complete();
+                        }
+
+                        return;
+                    }
+
                     loading.add(( index, percentage ));
                 },
                 onDone: () {
@@ -196,12 +226,11 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
         });
 
         for(StronzLoadingPhase phase in super.widget.phases) {
-
             if(phase is StronzStaticLoadingPhase)
                 await for (double percentage in this._staticLoad(phase.steps, phase.allowedFails))
                     yield advance + percentage * phase.weight;
             else if (phase is StronzDynamicLoadingPhase)
-                await for (double percentage in this._dynamicLoad(phase.steps, phase.allowedFails))
+                await for (double percentage in this._dynamicLoad(phase.steps(), phase.allowedFails))
                     yield advance + percentage * phase.weight; 
             else
                 throw Exception("Unknown loading phase type");
