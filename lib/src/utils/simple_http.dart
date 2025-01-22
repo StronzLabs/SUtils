@@ -7,6 +7,7 @@ import 'package:http/io_client.dart';
 final class HTTP {
 
     static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+    static final bool _useProxy = false;
 
     HTTP._();
     
@@ -18,6 +19,9 @@ final class HTTP {
         HttpClient client = HttpClient();
         client.userAgent = HTTP.userAgent;
         client.connectionTimeout = timeout;
+
+        if(HTTP._useProxy)
+            client.findProxy = (_) => "PROXY 127.0.0.1:8080";
 
         for (int i = 0; i < maxRetries; i++) {
             try {
