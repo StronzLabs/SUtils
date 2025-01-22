@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 abstract class Initializable {
-    late Future<void> _initialized;
+    late final Future<void> _initialized;
     final StreamController<dynamic> _progress = StreamController.broadcast();
 
     Initializable() {
