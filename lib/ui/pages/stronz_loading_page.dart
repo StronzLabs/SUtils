@@ -227,7 +227,7 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
 
         for(StronzLoadingPhase phase in super.widget.phases) {
             if(phase is StronzStaticLoadingPhase)
-                await for (double percentage in this._staticLoad(phase.steps, phase.allowedFails))
+                await for (double percentage in this._staticLoad(phase.steps(), phase.allowedFails))
                     yield advance + percentage * phase.weight;
             else if (phase is StronzDynamicLoadingPhase)
                 await for (double percentage in this._dynamicLoad(phase.steps(), phase.allowedFails))
