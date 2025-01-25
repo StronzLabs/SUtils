@@ -5,7 +5,14 @@ import 'src/plugin/android_plugin.dart' as android;
 
 final class SUtils {
     static late Future<void> Function() _initializer;
-    static Future<void> ensureInitialized() => SUtils._initializer();
+    static bool _initialized = false;
+
+    static Future<void> ensureInitialized() async {
+        if(SUtils._initialized)
+            return;
+        SUtils._initialized = true;
+        await SUtils._initializer();
+    }
 }
 
 final class EPlatformAndroid {

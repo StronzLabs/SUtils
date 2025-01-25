@@ -12,7 +12,6 @@ import 'package:sutils/ui/dialogs/confirmation_dialog.dart';
 import 'package:sutils/logic/loading/stronz_loading_phase.dart';
 import 'package:sutils/logic/loading/stronz_static_loading_phase.dart';
 import 'package:sutils/utils.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
 
 class StronzLoadingPage extends StatefulWidget {
     final Widget splash;
