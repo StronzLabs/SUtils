@@ -267,7 +267,7 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
     @override
     void initState() {
         super.initState();
-        WakelockPlus.enable();
+        SafeWakelock.enable();
 
         SUtils.ensureInitialized().then((_) {
             this._foregrunLoading();
@@ -279,7 +279,7 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
     void dispose() {
         this._animationController.dispose();
         this._additionalInfoTimer?.cancel();
-        WakelockPlus.disable();
+        SafeWakelock.disable();
         super.dispose();
     }
 
