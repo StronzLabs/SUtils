@@ -16,6 +16,10 @@ abstract class Updater {
         return jsonDecode(release);
     }
 
+    static Future<Stream<double>?> update() async {
+        return Updater.create().doUpdate();
+    }
+
     static Future<String> get platformUrl async {
         String platform;
         if(Platform.isAndroid)

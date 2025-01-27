@@ -1,7 +1,7 @@
 
 import 'dart:async';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sutils/logic/update/updater.dart';
+import 'package:sutils/src/update/updater.dart';
 
 final class VersionChecker {
     VersionChecker._();
@@ -26,9 +26,5 @@ final class VersionChecker {
         } catch (_) {
             return false;
         }
-    }
-
-    static Future<Stream<double>?> update() async {
-        return Updater.create().doUpdate();
     }
 }

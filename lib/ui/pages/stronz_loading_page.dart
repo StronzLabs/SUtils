@@ -7,6 +7,7 @@ import 'package:sutils/logic/errors/stronz_loading_early_fail.dart';
 import 'package:sutils/logic/errors/stronz_loading_warn.dart';
 import 'package:sutils/logic/loading/stronz_dynamic_loading_phase.dart';
 import 'package:sutils/logic/update/version.dart';
+import 'package:sutils/src/update/updater.dart';
 import 'package:sutils/sutils.dart';
 import 'package:sutils/ui/dialogs/confirmation_dialog.dart';
 import 'package:sutils/logic/loading/stronz_loading_phase.dart';
@@ -194,7 +195,7 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
         );
 
         if(wantUpdate)
-            return VersionChecker.update();
+            return Updater.update();
 
         return null;
     }

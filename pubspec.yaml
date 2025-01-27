@@ -29,6 +29,7 @@ dependencies:
   process_run: ^1.2.2+1
   url_launcher: ^6.3.1
   win32_registry: ^1.1.5
+  pointycastle: ^3.9.1
 
 dev_dependencies:
   flutter_test:
