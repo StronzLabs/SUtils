@@ -268,6 +268,12 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
         super.initState();
         SafeWakelock.enable();
 
+        // TODO: https://stackoverflow.com/a/73615773/10064643 https://github.com/flutter/flutter/issues/107416
+        FlutterError.onError = (details) {
+            if (details.exception is! NetworkImageLoadException)
+                throw details.exception;
+        };
+
         SUtils.ensureInitialized().then((_) {
             this._foregrunLoading();
             super.widget.backgroundLoading?.call();

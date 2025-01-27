@@ -23,30 +23,32 @@ class ResourceImage extends StatelessWidget {
         if(this.uri.toString().isEmpty)
             return const SizedBox.shrink();
 
-        return this.uri.scheme == "http" || this.uri.scheme == "https"
-            ? Image.network(
-                this.uri.toString(),
-                fit: this.fit,
-                width: this.width,
-                height: this.height,
-                alignment: this.alignment,
+        return Image(
+            image: ResourceImage.provider(uri: this.uri),
+            fit: this.fit,
+            width: this.width,
+            height: this.height,
+            alignment: this.alignment,
+            errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+        );
+    }
+
+    static ImageProvider<Object> provider({required Uri uri}) {
+        ImageProvider<Object> image;
+        if(uri.scheme == "http" || uri.scheme == "https")
+            image = NetworkImage(uri.toString());
+        else
+            image = FileImage(File.fromUri(uri));
+
+        image.resolve(ImageConfiguration.empty).addListener(
+            ImageStreamListener(
+                (_, __) {},
+                onError: (_, __) => imageCache.evict(image)
             )
-            : Image.file(
-                File.fromUri(uri),
-                fit: this.fit,
-                width: this.width,
-                height: this.height,
-                alignment: this.alignment,
-            );
+        );
+
+        return image;
     }
 }
 
-ImageProvider<Object> resourceImageProvider({required Uri uri}) {
-    return uri.scheme == "http" || uri.scheme == "https"
-        ? NetworkImage(
-            uri.toString(),
-        ) as ImageProvider<Object>
-        : FileImage(
-            File.fromUri(uri),
-        ) as ImageProvider<Object>;
-}
+
