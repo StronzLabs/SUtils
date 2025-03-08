@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sutils/utils.dart';
 
 class ConfirmationDialog {
     static Future<bool> ask({
@@ -24,7 +25,8 @@ class ConfirmationDialog {
                     ),
                     TextButton(
                         onPressed: () => Navigator.of(context).pop(true),
-                        child: Text(confirm)
+                        autofocus: EPlatform.isTV,
+                        child: Text(confirm),
                     )
                 ],
             )
