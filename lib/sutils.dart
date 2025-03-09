@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'src/plugin/desktop_plugin.dart' as desktop;
 import 'src/plugin/android_plugin.dart' as android;
+import 'src/plugin/tizen_plugin.dart' as tizen;
 
 final class SUtils {
     static late Future<void> Function() _initializer;
@@ -23,4 +24,9 @@ final class EPlatformAndroid {
 final class SUtilsDesktop {
     SUtilsDesktop._();
     static void registerWith() => SUtils._initializer = desktop.registerWith;
+}
+
+final class SUtilsTizen {
+    SUtilsTizen._();
+    static void register() => SUtils._initializer = tizen.registerWith;
 }

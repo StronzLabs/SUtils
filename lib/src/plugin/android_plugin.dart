@@ -20,6 +20,7 @@ void _setupOrientationAndOverlays() {
 Future<void> registerWith() async {
     WidgetsFlutterBinding.ensureInitialized();
     MethodChannel channel = MethodChannel('org.stronzlabs.sutils/utils');
+    EPlatform.isTizenTV = false;
     EPlatform.isAndroidTV = await channel.invokeMethod<bool>('isAndroidTV') ?? false;
     _setupOrientationAndOverlays();
 }

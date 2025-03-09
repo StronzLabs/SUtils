@@ -5,5 +5,6 @@ import 'package:window_manager/window_manager.dart';
 Future<void> registerWith() async {
     WidgetsFlutterBinding.ensureInitialized();
     EPlatform.isAndroidTV = false;
+    EPlatform.isTizenTV = false;
     await windowManager.ensureInitialized();
 }

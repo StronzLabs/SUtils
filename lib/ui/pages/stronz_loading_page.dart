@@ -254,9 +254,10 @@ class _LoadingPageState extends State<StronzLoadingPage> with SingleTickerProvid
                 this._animationController.forward(from: 0);
             },
             cancelOnError: true,
-            onError: (error, stacktrace) => super.setState(
-                () => this._error = error.toString()
-            ),
+            onError: (error, stacktrace) {
+                print(stacktrace);
+                super.setState(() => this._error = error.toString());
+            },
             onDone: () {
                 if(!this._update && super.mounted)
                     Navigator.of(super.context).pushReplacementNamed("/home");

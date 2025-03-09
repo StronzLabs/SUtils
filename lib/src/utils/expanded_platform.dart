@@ -16,6 +16,7 @@ final class EPlatform {
     static bool get isTablet => EPlatform.isMobile && MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.single).size.shortestSide >= 600;
 
     static late final bool isAndroidTV;
-    static bool get isTV => EPlatform.isAndroidTV;
+    static late final bool isTizenTV;
+    static bool get isTV => EPlatform.isAndroidTV || EPlatform.isTizenTV;
 }
 
