@@ -54,11 +54,18 @@ class _RowListTraversalPolicy extends ReadingOrderTraversalPolicy {
             FocusNode? target = nextRow == null ? null : this._sortedChildren(nextRow).firstOrNull;
             if(target != null) {
                 target.requestFocus();
-                scrollController?.animateTo(
+                Scrollable.ensureVisible(
+                    target.parent?.context! ?? target.context!,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    alignmentPolicy: direction == TraversalDirection.down
+                        ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd
+                        : ScrollPositionAlignmentPolicy.keepVisibleAtStart
+                ).then((_) => scrollController?.animateTo(
                     0,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut
-                );
+                ));
                 return true;
             }
         }
