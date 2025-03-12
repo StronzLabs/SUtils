@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sutils/ui/widgets/animated_expanding_container.dart';
+import 'package:sutils/utils.dart';
 
 class ExpandableText extends StatefulWidget {
     final String text;
@@ -12,6 +13,8 @@ class ExpandableText extends StatefulWidget {
     final TextAlign? textAlign;
     final TextDirection? textDirection;
     final bool initiallyExpanded;
+    final void Function()? onTvFocus;
+    final bool autofocus;
 
     const ExpandableText(this.text, {
         super.key,
@@ -21,7 +24,9 @@ class ExpandableText extends StatefulWidget {
         this.style,
         this.textAlign,
         this.textDirection,
-        this.initiallyExpanded = false
+        this.initiallyExpanded = false,
+        this.onTvFocus,
+        this.autofocus = false
     });
 
     @override
@@ -31,6 +36,14 @@ class ExpandableText extends StatefulWidget {
 class _ExpandableTextState extends State<ExpandableText> {
 
     late bool _expanded = super.widget.initiallyExpanded;
+
+    TextStyle get _textStyle => super.widget.style == null || super.widget.style!.inherit
+            ? DefaultTextStyle.of(context).style.merge(widget.style) : super.widget.style!;
+
+    TextAlign get _textAlign => super.widget.textAlign ?? DefaultTextStyle.of(context).textAlign ?? TextAlign.start;
+    TextDirection get _textDirection => super.widget.textDirection ?? Directionality.of(context);
+    TextScaler get _textScaler => MediaQuery.textScalerOf(context);
+    Locale? get _locale => Localizations.maybeLocaleOf(context);
 
     TextSpan _buildLink(BuildContext context, TextStyle effectiveTextStyle) {
         String linkText = (this._expanded ? super.widget.expandedLabel : super.widget.collapsedLabel ) ?? '';
@@ -60,17 +73,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         );
     }
 
-    @override
-    Widget build(BuildContext context) {
-        DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
-        TextStyle effectiveTextStyle = super.widget.style == null || super.widget.style!.inherit
-            ? defaultTextStyle.style.merge(widget.style) : super.widget.style!;
-
-        TextAlign textAlign = super.widget.textAlign ?? defaultTextStyle.textAlign ?? TextAlign.start;
-        TextDirection textDirection = super.widget.textDirection ?? Directionality.of(context);
-        TextScaler textScaler = MediaQuery.textScalerOf(context);
-        Locale? locale = Localizations.maybeLocaleOf(context);
-
+    Widget _buildContent(BuildContext context) {
         return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
                 assert(constraints.hasBoundedWidth);
@@ -78,17 +81,17 @@ class _ExpandableTextState extends State<ExpandableText> {
                 double maxWidth = constraints.maxWidth;
                 TextSpan content = TextSpan(
                     text: super.widget.text,
-                    style: effectiveTextStyle
+                    style: this._textStyle
                 );
                 TextPainter textPainter = TextPainter(
-                    textAlign: textAlign,
-                    textDirection: textDirection,
-                    textScaler: textScaler,
-                    locale: locale,
+                    textAlign: this._textAlign,
+                    textDirection: this._textDirection,
+                    textScaler: this._textScaler,
+                    locale: this._locale,
                     maxLines: super.widget.maxLines,
                 );
 
-                TextSpan link = this._buildLink(context, effectiveTextStyle);
+                TextSpan link = this._buildLink(context, this._textStyle);
                 textPainter.text = link;
                 textPainter.layout(minWidth: constraints.minWidth, maxWidth: maxWidth);
                 Size linkSize = textPainter.size;
@@ -111,16 +114,16 @@ class _ExpandableTextState extends State<ExpandableText> {
                                     text: expanded
                                         ? super.widget.text
                                         : super.widget.text.substring(0, max(endOffset, 0)),
-                                    style: effectiveTextStyle
+                                    style: this._textStyle
                                 ),
                                 if(textPainter.didExceedMaxLines)
                                     link
                             ]
                         ),
                         softWrap: true,
-                        textDirection: textDirection,
-                        textAlign: textAlign,
-                        textScaler : textScaler,
+                        textDirection: this._textDirection,
+                        textAlign: this._textAlign,
+                        textScaler : this._textScaler,
                         overflow: TextOverflow.clip,
                     );
                 }
@@ -128,42 +131,44 @@ class _ExpandableTextState extends State<ExpandableText> {
                 if (!textPainter.didExceedMaxLines)
                     return buildText(context, false);
 
-                return GestureDetector(
-                    onTap: () => super.setState(() => this._expanded = !this._expanded),
-                    child: AnimatedExpandingContainer(
-                        expanded: this._expanded,
-                        expandedWidget: buildText(context, true),
-                        unexpandedWidget: buildText(context, false),
-                    ),
+                return AnimatedExpandingContainer(
+                    expanded: this._expanded,
+                    expandedWidget: buildText(context, true),
+                    unexpandedWidget: buildText(context, false),
                 );
             }
         );
     }
-}
-
-class EllipsisTextPainter extends CustomPainter {
-    final TextSpan text;
-    final int maxLines;
-    final String? ellipsis;
-
-    EllipsisTextPainter({
-        required this.text,
-        required this.ellipsis,
-        required this.maxLines,
-    });
 
     @override
-    bool shouldRepaint(CustomPainter oldDelegate) => false;
-
-    @override
-    void paint(Canvas canvas, Size size) {
-        TextPainter painter = TextPainter(
-            text: this.text,
-            maxLines: this.maxLines,
-            textDirection: TextDirection.ltr,
-            ellipsis: this.ellipsis
+    Widget build(BuildContext context) {
+        return Card(
+            shadowColor: Colors.transparent,
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            child: InkWell(
+                autofocus: super.widget.autofocus,
+                onFocusChange: (bool focused) {
+                    if (focused && EPlatform.isTV)
+                        super.widget.onTvFocus?.call();
+                },
+                onTap: () {
+                    super.setState(() => this._expanded = !this._expanded);
+                    if(this._expanded)
+                        Scrollable.ensureVisible(
+                            FocusScope.of(context).focusedChild!.parent!.context!,
+                            duration: const Duration(milliseconds: 150),
+                            curve: Curves.easeInOut,
+                            alignmentPolicy: ScrollPositionAlignmentPolicy.explicit
+                        );
+                    else if(EPlatform.isTV)
+                        super.widget.onTvFocus?.call();
+                },
+                child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: this._buildContent(context)
+                )
+            )
         );
-        painter.layout(maxWidth: size.width);
-        painter.paint(canvas, const Offset(0, 0));
     }
 }
