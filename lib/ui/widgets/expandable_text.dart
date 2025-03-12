@@ -14,6 +14,7 @@ class ExpandableText extends StatefulWidget {
     final TextDirection? textDirection;
     final bool initiallyExpanded;
     final void Function()? onTvFocus;
+    final void Function()? onTvCollapse;
     final bool autofocus;
 
     const ExpandableText(this.text, {
@@ -26,6 +27,7 @@ class ExpandableText extends StatefulWidget {
         this.textDirection,
         this.initiallyExpanded = false,
         this.onTvFocus,
+        this.onTvCollapse,
         this.autofocus = false
     });
 
@@ -156,12 +158,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                     super.setState(() => this._expanded = !this._expanded);
                     if(EPlatform.isTV)
                         if(this._expanded)                    
-                            Scrollable.ensureVisible(
-                                FocusScope.of(context).focusedChild!.parent!.context!,
-                                duration: const Duration(milliseconds: 150),
-                                curve: Curves.easeInOut,
-                                alignmentPolicy: ScrollPositionAlignmentPolicy.explicit
-                            );
+                            super.widget.onTvCollapse?.call();
                         else
                             super.widget.onTvFocus?.call();
                 },
