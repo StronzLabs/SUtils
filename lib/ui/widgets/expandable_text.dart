@@ -14,7 +14,7 @@ class ExpandableText extends StatefulWidget {
     final TextDirection? textDirection;
     final bool initiallyExpanded;
     final void Function()? onTvFocus;
-    final void Function()? onTvCollapse;
+    final void Function()? onTvExpanded;
     final bool autofocus;
 
     const ExpandableText(this.text, {
@@ -27,7 +27,7 @@ class ExpandableText extends StatefulWidget {
         this.textDirection,
         this.initiallyExpanded = false,
         this.onTvFocus,
-        this.onTvCollapse,
+        this.onTvExpanded,
         this.autofocus = false
     });
 
@@ -158,7 +158,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                     super.setState(() => this._expanded = !this._expanded);
                     if(EPlatform.isTV)
                         if(this._expanded)                    
-                            super.widget.onTvCollapse?.call();
+                            super.widget.onTvExpanded?.call();
                         else
                             super.widget.onTvFocus?.call();
                 },
