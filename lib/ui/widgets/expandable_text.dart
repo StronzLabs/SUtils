@@ -154,15 +154,16 @@ class _ExpandableTextState extends State<ExpandableText> {
                 },
                 onTap: () {
                     super.setState(() => this._expanded = !this._expanded);
-                    if(this._expanded)
-                        Scrollable.ensureVisible(
-                            FocusScope.of(context).focusedChild!.parent!.context!,
-                            duration: const Duration(milliseconds: 150),
-                            curve: Curves.easeInOut,
-                            alignmentPolicy: ScrollPositionAlignmentPolicy.explicit
-                        );
-                    else if(EPlatform.isTV)
-                        super.widget.onTvFocus?.call();
+                    if(EPlatform.isTV)
+                        if(this._expanded)                    
+                            Scrollable.ensureVisible(
+                                FocusScope.of(context).focusedChild!.parent!.context!,
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.easeInOut,
+                                alignmentPolicy: ScrollPositionAlignmentPolicy.explicit
+                            );
+                        else
+                            super.widget.onTvFocus?.call();
                 },
                 child: Padding(
                     padding: const EdgeInsets.all(8.0),
