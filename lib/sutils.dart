@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:sutils/utils.dart';
+
 import 'src/plugin/desktop_plugin.dart' as desktop;
 import 'src/plugin/android_plugin.dart' as android;
 import 'src/plugin/tizen_plugin.dart' as tizen;
@@ -13,6 +16,9 @@ final class SUtils {
             return;
         SUtils._initialized = true;
         await SUtils._initializer();
+        
+        if(EPlatform.isTV)
+            FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTraditional;
     }
 }
 
