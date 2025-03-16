@@ -40,7 +40,7 @@ class _ExpandableTextState extends State<ExpandableText> {
     late bool _expanded = super.widget.initiallyExpanded;
 
     TextStyle get _textStyle => super.widget.style == null || super.widget.style!.inherit
-            ? DefaultTextStyle.of(context).style.merge(widget.style) : super.widget.style!;
+            ? DefaultTextStyle.of(context).style.merge(super.widget.style) : super.widget.style!;
 
     TextAlign get _textAlign => super.widget.textAlign ?? DefaultTextStyle.of(context).textAlign ?? TextAlign.start;
     TextDirection get _textDirection => super.widget.textDirection ?? Directionality.of(context);
