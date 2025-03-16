@@ -7,7 +7,7 @@ final class EPlatform {
     EPlatform._();
 
     static bool get isWeb => kIsWeb;
-    static bool get isDesktop => !EPlatform.isWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS);
+    static bool get isDesktop => !EPlatform.isTV && !EPlatform.isWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS);
     static bool get isMobile => !EPlatform.isTV && !EPlatform.isWeb && (Platform.isAndroid || Platform.isIOS);
 
     static bool get isMobileWeb => EPlatform.isWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android);
