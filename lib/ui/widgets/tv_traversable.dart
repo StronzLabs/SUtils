@@ -25,7 +25,7 @@ class _RowListTraversalPolicy extends ReadingOrderTraversalPolicy {
     final ScrollController? scrollController;
     _RowListTraversalPolicy(this.scrollController);
 
-    List<FocusNode> _sortedChildren(FocusNode node) {
+    List<FocusNode> _sortedChildrenByX(FocusNode node) {
         List<FocusNode> siblings = node.children.toList();
         siblings.sort((a, b) {
             RenderBox aBox = a.context!.findRenderObject() as RenderBox;
@@ -35,14 +35,25 @@ class _RowListTraversalPolicy extends ReadingOrderTraversalPolicy {
         return siblings;
     }
 
+    List<FocusNode> _sortedChildrenByY(FocusNode node) {
+        List<FocusNode> siblings = node.children.toList();
+        siblings.sort((a, b) {
+            RenderBox aBox = a.context!.findRenderObject() as RenderBox;
+            RenderBox bBox = b.context!.findRenderObject() as RenderBox;
+            return aBox.localToGlobal(Offset.zero).dy.compareTo(bBox.localToGlobal(Offset.zero).dy);
+        });
+        return siblings;
+    }
+
     @override
     bool inDirection(FocusNode currentNode, TraversalDirection direction) {
         FocusNode row = currentNode.parent!;
         FocusNode list = row.parent!;
-        List<FocusNode> siblings = this._sortedChildren(row);
+        List<FocusNode> siblings = this._sortedChildrenByX(row);
 
         if (direction == TraversalDirection.down || direction == TraversalDirection.up) {
-            List<FocusNode> rows = list.children.toList();
+            List<FocusNode> rows = this._sortedChildrenByY(list);
+            rows.removeWhere((row) => row.children.isEmpty);
             int index = rows.indexOf(row);
 
             FocusNode? nextRow;
@@ -51,7 +62,7 @@ class _RowListTraversalPolicy extends ReadingOrderTraversalPolicy {
             else if (direction == TraversalDirection.up && index > 0)
                 nextRow = rows[index - 1];
 
-            FocusNode? target = nextRow == null ? null : this._sortedChildren(nextRow).firstOrNull;
+            FocusNode? target = nextRow == null ? null : this._sortedChildrenByX(nextRow).firstOrNull;
             if(target != null) {
                 target.requestFocus();
                 Scrollable.ensureVisible(
