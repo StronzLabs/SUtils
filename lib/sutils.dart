@@ -6,6 +6,7 @@ import 'package:sutils/utils.dart';
 import 'src/plugin/desktop_plugin.dart' as desktop;
 import 'src/plugin/android_plugin.dart' as android;
 import 'src/plugin/tizen_plugin.dart' as tizen;
+import 'src/plugin/ios_plugin.dart' as ios;
 
 final class SUtils {
     static late Future<void> Function() _initializer;
@@ -35,4 +36,9 @@ final class SUtilsDesktop {
 final class SUtilsTizen {
     SUtilsTizen._();
     static void register() => SUtils._initializer = tizen.registerWith;
+}
+
+final class SUtilsIos {
+    SUtilsIos._();
+    static void registerWith() => SUtils._initializer = ios.registerWith;
 }

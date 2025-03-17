@@ -9,6 +9,7 @@ platforms:
   linux:
   macos:
   windows:
+  ios:
 
 environment:
   sdk: ^3.6.0
@@ -49,6 +50,8 @@ flutter:
         package: org.stronzlabs.sutils
         pluginClass: SUtilsPlugin
         dartPluginClass: EPlatformAndroid
+      ios:
+        dartPluginClass: SUtilsIos
       linux:
         dartPluginClass: SUtilsDesktop
       macos:
